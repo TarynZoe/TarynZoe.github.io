@@ -9,8 +9,8 @@
     //Object for the storing the ball state on both axis
     const ball = {
       position: {
-        x: 975,
-        y: 750,
+        x: 0,
+        y: 0,
       },
       speed: {
         x: 0,
@@ -18,6 +18,11 @@
       },
       rotation: 0,
     };
+    function start() {
+      const ballWidth = document.getElementById("basketball").offsetWidth;
+      ball.position.x = (window.innerWidth - ballWidth)/2
+      ball.position.y = window.innerHeight
+    }
     //the ball speed controls the rate at which the balls goes toward the ground
     // so by setting a negative speed it goes up/to the side
     function bounceUp() {
@@ -78,12 +83,16 @@
         ball.speed.y = (ball.speed.y * -1)
       }
     }
+    document.addEventListener('DOMContentLoaded', function(){
+      start()
     // calls move to perform calculations and render to move everything every 20ms
     ball.interval = setInterval(function () {
       move();
       rotate();
       render();
     }, 20);
+    })
+
   </script>
   <title>Taryn's Ballz</title>
   <style>
@@ -102,6 +111,7 @@
       background-image: url('Baller floor.jpg');
       background-size: cover;
       overflow: hidden;
+      cursor: url(/Users/Taryn/Projectz/Ballz/hand.png) pointer;
     }
 
     .ball {
