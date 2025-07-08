@@ -3,14 +3,14 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=.5, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=0.5, user-scalable=no">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   <script>
     //Object for the storing the ball state on both axis
     const ball = {
       position: {
-        x: 0,
-        y: 0,
+        x: 975,
+        y: 750,
       },
       speed: {
         x: 0,
@@ -18,29 +18,30 @@
       },
       rotation: 0,
     };
-    function start() {
-      const ballWidth = document.getElementById("basketball").offsetWidth;
-      ball.position.x = (window.innerWidth - ballWidth)/2
-      ball.position.y = window.innerHeight
-    }
     //the ball speed controls the rate at which the balls goes toward the ground
     // so by setting a negative speed it goes up/to the side
     function bounceUp() {
-      ball.speed.y += 40
+      ball.speed.y += 60
     }
     function bounceDown() {
-      ball.speed.y -= 40
+      ball.speed.y -= 60
     }
     function bounceLeft() {
-      ball.speed.x += 40
+      ball.speed.x += 60
     }
     function bounceRight() {
-      ball.speed.x -= 40
+      ball.speed.x -= 46
     }
     // this function updates the css to change the ball position
     function render() {
       document.getElementById("wrapper").style = 'bottom:' + ball.position.y + 'px; left:' + ball.position.x + 'px';
       document.getElementById("basketball").style = `transform: rotate(${ball.rotation}deg)`;
+      document.getElementById("canvas").dispatchEvent(
+        new CustomEvent("ballmove", {
+          bubbles: true,
+          detail: {ballX: ball.position.x, ballY: ball.position.y},
+        }),
+      );
     }
     function rotate() {
       ball.rotation += ball.speed.x
@@ -83,39 +84,42 @@
         ball.speed.y = (ball.speed.y * -1)
       }
     }
-    document.addEventListener('DOMContentLoaded', function(){
-      start()
     // calls move to perform calculations and render to move everything every 20ms
     ball.interval = setInterval(function () {
       move();
       rotate();
       render();
     }, 20);
-    })
-
   </script>
   <title>Taryn's Ballz</title>
   <style>
     .basketball {
-      width: 200px;
+      width: 150px;
       user-select: none;
     }
 
     .wrapper {
-      //transition: all 0.1s linear;
       position: absolute;
       user-select: none;
+      left: 100px;
     }
 
     body {
       background-image: url('Baller floor.jpg');
       background-size: cover;
       overflow: hidden;
-      cursor: url(/Users/Taryn/Projectz/Ballz/hand.png) pointer;
     }
 
     .ball {
       position: relative;
+    }
+
+    .court {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
     }
 
     .top,
@@ -150,10 +154,27 @@
     .right {
       right: 0;
     }
+    .bhoop{
+      position:absolute;
+      z-index:2;
+      right: 0px;
+      top: 250px;
+      width: 333px;
+    }
+    #canvas{
+      position:fixed;
+      z-index:1;
+      /*background-color:#ff00ff44;*/
+      right:-385px;
+      top: -75px;
+      pointer-events: none;
+    }
   </style>
 </head>
 
 <body>
+  <canvas id="canvas"></canvas>
+  <div class ="court"></div>
   <div class="wrapper" id="wrapper">
     <div class="ball">
       <img src="Basketball.png" class="basketball" id="basketball" draggable="false">
@@ -162,7 +183,10 @@
       <div class="left" onmousedown="bounceLeft()"></div>
       <div class="right" onmousedown="bounceRight()"></div>
     </div>
+  </div class="hoop">
+    <img src="Front of Hoop.png" class="bhoop" id="bhoop">
   </div>
+  <script src="js/net.js"></script>
 </body>
 
 </html>
